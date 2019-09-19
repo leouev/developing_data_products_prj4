@@ -1,0 +1,24 @@
+---
+title: "Reproducible_Pitch"
+author: "UE"
+date: "9/16/2019"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Airbnb 2019 Dataset until 2019/Sep
+```{r}
+## download the file
+if(!file.exists("AB_NYC_2019.csv")){
+        unzip("AB_NYC_2019.csv.zip")
+}
+## read the csv file
+airbnbny <- read.csv("AB_NYC_2019.csv")
+airbnbny$location <- paste(airbnbny$latitude, ":", airbnbny$longitude)
+summary(airbnbny)
+```
