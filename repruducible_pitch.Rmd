@@ -2,16 +2,18 @@
 title: "Airbnb 2019 New York City Listing Insights"
 author: "Youyi Liu"
 date: "9/16/2019"
-output:
-  slidy_presentation: default
-  ioslides_presentation: default
+output: 
+        slidy_presentation:
+                font_adjustment: -1
+                footer: "Airbnb 2019 New York City Listing Insights, Youyi Liu"
+                theme: cerulean
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Listing Map in New York City
+## Listing Map in New York City {#nextsteps .emphasized}
 ```{r leafmap, echo=FALSE, message=FALSE, warning=FALSE}
 ## airbnb dataset
 airbnbny <- read.csv("AB_NYC_2019.csv")
