@@ -1,6 +1,6 @@
 ---
-title: "Reproducible_Pitch"
-author: "UE"
+title: "Airbnb 2019 New York City Listing Insights"
+author: "Youyi Liu"
 date: "9/16/2019"
 output:
   slidy_presentation: default
@@ -11,14 +11,70 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Airbnb 2019 Dataset until 2019/Sep
-```{r}
-## download the file
-if(!file.exists("AB_NYC_2019.csv")){
-        unzip("AB_NYC_2019.csv.zip")
-}
-## read the csv file
+## Listing Map in New York City
+```{r leafmap, echo=FALSE, message=FALSE, warning=FALSE}
+## airbnb dataset
 airbnbny <- read.csv("AB_NYC_2019.csv")
-airbnbny$location <- paste(airbnbny$latitude, ":", airbnbny$longitude)
-summary(airbnbny)
+        airbnbny$location <- paste(airbnbny$latitude, ":", airbnbny$longitude)
+        airbnbny$last_review <- as.Date(airbnbny$last_review)
+## leaflet map
+library(leaflet)
+airbnbicon <- makeIcon(
+        iconUrl = "https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c513.png",
+        iconWidth = 31*2000/625, iconHeight = 31,
+        iconAnchorX = 31*2000/625/2, iconAnchorY = 16
+)
+airbnbny %>%
+leaflet() %>%
+addTiles() %>%
+addMarkers(icon = airbnbicon, 
+           popup = airbnbny$name, clusterOptions = markerClusterOptions())
+                
+```
+
+## Room Type
+```{r roomtype, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+## percent function
+        percent <- function(x, digits = 2, format = "f", ...) {
+                paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
+        }
+        
+airbnbny3 <- airbnbny 
+                airbnb3 <- airbnbny3 %>%
+                                group_by(room_type) %>%
+                                summarise(count = n()/nrow(airbnbny3))
+                
+                plot3 <- ggplot(data = airbnb3, aes(x = "", y = count, fill = room_type)) + 
+                                geom_bar(width = 1, stat = "identity") +
+                                coord_polar("y", start = 0) +
+                                geom_text(aes(label = percent(count)), position = position_stack(vjust = 0.5), color = "black", size = 5) +
+                                theme_void()+
+                                scale_fill_brewer() +
+                                ggtitle("Room Type Ratio")
+                plot3
+```
+
+## Price Distribution
+``` {r pricedistribution, echo = FALSE, message = FALSE, warning = FALSE}
+airbnbny2 <- airbnbny
+plot2 <- ggplot(data = airbnbny2, aes(x = price, fill = room_type)) + 
+                geom_histogram(binwidth = 50) + 
+                theme_minimal() +
+                scale_fill_brewer() +
+                ggtitle("Price Distribution")
+plot2
+```
+
+## Price vs Roomtype
+``` {r pricevsroomtype, echo = FALSE, message = FALSE, warning = FALSE}
+airbnbny1 <- airbnbny
+                
+plot1 <- ggplot(data = airbnbny1, aes(x = room_type, y = price, fill = room_type, color = room_type)) +
+                geom_boxplot() +
+                theme_minimal() +
+                scale_fill_brewer() +
+                ggtitle("Room Type vs Prices")
+plot1
 ```
